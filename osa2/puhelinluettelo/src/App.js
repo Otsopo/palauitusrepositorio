@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons.js'
 
+const Notification = ({ notification }) => {
+  if (notification === null) {
+    return null
+  }
+
+  if (notification.includes('removed'))
+    return (
+      <div className="errorRed error">
+        {notification}
+      </div>
+    )
+
+  return (
+    <div className="error">
+      {notification}
+    </div>
+  )
+}
+
+
+
 const Persons = ({ persons, deletePerson }) => {
   return (
     <ul>
@@ -40,6 +61,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setNewSearch] = useState('')
+  const [notification, setNewNotification] = useState(null)
 
   useEffect(() => {
     personService
@@ -49,7 +71,6 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-
     if (persons.map((person) => person
       .name
       .toLowerCase())
@@ -62,8 +83,12 @@ const App = () => {
           .update(personToUpdate.id, { name: newName, number: newNumber })
           .then(returnedPerson => {
             setPersons(persons.filter(item => item != personToUpdate).concat(returnedPerson))
+            createNotification(`${newName} number changed to ${newNumber}`)
             setNewName('')
             setNewNumber('')
+          })
+          .catch(error => {
+            createNotification(`${newName} has already been removed from the server`)
           })
     } else {
 
@@ -76,6 +101,7 @@ const App = () => {
         .create(nameObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          createNotification(`${newName} added`)
           setNewName('')
           setNewNumber('')
         })
@@ -91,7 +117,12 @@ const App = () => {
         .deletePerson(person.id)
         .then(
           setPersons(persons.filter(item => item != person))
-        )
+        ).catch(e => createNotification(`Person was already removed from the server`))
+  }
+
+  const createNotification = (message) => {
+    setNewNotification(message)
+    setTimeout(() => { setNewNotification(null) }, 5000)
   }
 
   const personsToShow = search === '' ?
@@ -102,9 +133,11 @@ const App = () => {
       .includes(search.toLowerCase())
     )
 
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Search search={search} onChange={handleSearchChange} />
 
       <h2>Add new</h2>
