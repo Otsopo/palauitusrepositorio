@@ -6,7 +6,7 @@ const Notification = ({ notification }) => {
     return null
   }
 
-  if (notification.includes('removed'))
+  if (notification.includes('Error'))
     return (
       <div className="errorRed error">
         {notification}
@@ -88,7 +88,8 @@ const App = () => {
             setNewNumber('')
           })
           .catch(error => {
-            createNotification(`${newName} has already been removed from the server`)
+            console.log(error.response.data)
+            createNotification(`Error: ${error.response.data.error}`)
           })
     } else {
 
@@ -105,6 +106,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+          console.log(error.response.data)
+          createNotification(`Error: ${error.response.data.error}`)
+        })
     }
   }
 
@@ -117,7 +122,7 @@ const App = () => {
         .deletePerson(person.id)
         .then(
           setPersons(persons.filter(item => item != person))
-        ).catch(e => createNotification(`Person was already removed from the server`))
+        ).catch(e => createNotification(`Error: Person was already removed from the server`))
   }
 
   const createNotification = (message) => {
