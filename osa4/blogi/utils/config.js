@@ -1,5 +1,9 @@
+require('dotenv').config()
 let PORT = process.env.PORT
-let MONGODB_URI = process.env.MONGOURL
+
+const MONGODB_URI = process.env.NODE_ENV === 'test'
+  ? process.env.TEST_MONGOURL
+  : process.env.MONGOURL
 
 module.exports = {
   MONGODB_URI,
