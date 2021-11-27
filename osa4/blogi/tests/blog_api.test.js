@@ -104,6 +104,46 @@ describe('POST tests', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
 })
+
+describe('DELETE tests', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogs = await helper.blogsInDb()
+    const blog = blogs[0]
+
+    await api
+      .delete(`/api/blogs/${blog.id}`)
+      .expect(204)
+
+    const finalBlogs = await helper.blogsInDb()
+
+    expect(finalBlogs).toHaveLength(
+      helper.initialBlogs.length - 1
+    )
+  })
+})
+
+
+describe('PUT tests', () => {
+  test('succeeds when updating likes and the id is valid', async () => {
+
+    const response = await api.get('/api/blogs')
+    const currentBlog = response.body[0]
+
+    let newBlog = {
+      ...currentBlog,
+      likes:100
+    }
+    await api
+      .put(`/api/blogs/${newBlog.id}`)
+      .send(newBlog)
+      .expect(200)
+
+    const updatedBlog = await helper.getBlogsById(newBlog.id)
+
+    expect(updatedBlog[0].likes).toBe(newBlog.likes)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
