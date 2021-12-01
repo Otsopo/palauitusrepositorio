@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 //TODO: Merge with Blog :D
 //IDK why I created a separate component for this???
 
-const BlogDetails = ({ blog, token, setBlogs, blogs, currentUser }) => {
+const BlogDetails = ({ blog, token, setBlogs, blogs, currentUser, likeHandler }) => {
   const { author, title, likes, url, user, id } = blog
 
   const handleLike = () => {
@@ -37,7 +37,7 @@ const BlogDetails = ({ blog, token, setBlogs, blogs, currentUser }) => {
   let response = [(
     <div key={id + 'detailBlock'}>
       <p>{url}</p>
-      <p>likes {likes}<button onClick={handleLike} >like</button></p>
+      <p>likes {likes}<button onClick={likeHandler!==undefined ? likeHandler : handleLike} >like</button></p>
       <p>{author}</p>
       <p>{user.username}</p>
     </div>
