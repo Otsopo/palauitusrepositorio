@@ -35,14 +35,14 @@ const BlogDetails = ({ blog, token, setBlogs, blogs, currentUser, likeHandler })
   }
 
   let response = [(
-    <div key={id + 'detailBlock'}>
+    <div className='blog-details' key={id + 'detailBlock'}>
       <p>{url}</p>
       <p>likes {likes}<button onClick={likeHandler!==undefined ? likeHandler : handleLike} >like</button></p>
       <p>{author}</p>
-      <p>{user.username}</p>
+      <p>{user?user.username:'no user'}</p>
     </div>
   )]
-  if (user.id === currentUser.id)
+  if (user && user === currentUser.id)
     response.push(
       (<div key={id+'remove'}>
         <button onClick={handleRemove} >remove</button>

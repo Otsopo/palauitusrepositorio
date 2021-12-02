@@ -91,8 +91,8 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject, token)
-      .then(returnedPerson => {
-        setBlogs(blogs.concat(returnedPerson))
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
         createNotification(`Blog ${target.title.value} by ${target.author.value} added`)
       })
       .catch(error => {
@@ -110,12 +110,12 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input type="text" name="username" />
+            <input type="text" id="username" name="username" />
           </div>
           <div>password
-            <input type="password" name="password" />
+            <input type="password" id="password" name="password" />
           </div>
-          <button type="submit">login</button>
+          <button id="login-button" type="submit">login</button>
         </form>
       </div>
     )
@@ -138,14 +138,16 @@ const App = () => {
       <div>{user.username} logged in</div>
       <button onClick={handleLogout}>logout</button>
       <div style={{ height: 40 + 'px' }}></div>
-      {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
-        <div key={blog.id} >
-          <Blog key={blog.id +'title'} blog={blog} />
-          <Togglable key={blog.id + 'button'} buttonLabel="view" ref={blogFormRef}>
-            <BlogDetails key={blog.id + 'details'} blog={blog} token={token} setBlogs={setBlogs} blogs={blogs} currentUser={user} />
-          </Togglable>
-        </div>
-      )}
+      <div id="blogs">
+        {blogs.sort((a,b) => b.likes-a.likes).map(blog =>
+          <div key={blog.id} >
+            <Blog key={blog.id +'title'} blog={blog} />
+            <Togglable key={blog.id + 'button'} buttonLabel="view" ref={blogFormRef}>
+              <BlogDetails key={blog.id + 'details'} blog={blog} token={token} setBlogs={setBlogs} blogs={blogs} currentUser={user} />
+            </Togglable>
+          </div>
+        )}
+      </div>
       <div style={{ height: 40 + 'px' }}></div>
       {loginForm()}
     </div>
