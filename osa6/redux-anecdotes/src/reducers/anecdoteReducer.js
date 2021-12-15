@@ -17,35 +17,44 @@ const asObject = (anecdote) => {
   }
 }
 
- const initialState = anecdotesAtStart.map(asObject)
+const initialState = anecdotesAtStart.map(asObject)
 
- export const voteAnecdoteAction = (id) => ({
+export const voteAnecdoteAction = (id) => ({
   type: 'VOTE',
   data: {
     id
   }
 })
 
-export const createAnecdoteAction = (content) => ({
-type: 'NEW_DOTE',
-data: asObject(content)})
+export const initializeAnecdotes = (dotes) => {
+  return {
+    type: 'INIT_DOTES',
+    data: dotes,
+  }
+}
 
-const reducer = (state = initialState, action) => {
+export const createAnecdoteAction = (data) => ({
+  type: 'NEW_DOTE',
+  data
+})
+
+const anecdoteReducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
   if (action.type === 'VOTE') {
     let data = action.data
-    let other_dotes = state.filter(dootti=>dootti.id!==data.id)
-    let voted_dote = state.filter(dootti=>dootti.id===data.id)[0]
-    let new_dotes = other_dotes.concat({...voted_dote,votes:voted_dote.votes+1})
+    let other_dotes = state.filter(dootti => dootti.id !== data.id)
+    let voted_dote = state.filter(dootti => dootti.id === data.id)[0]
+    let new_dotes = other_dotes.concat({ ...voted_dote, votes: voted_dote.votes + 1 })
 
     return new_dotes
-  }else if (action.type === "NEW_DOTE"){
+  } else if (action.type === "NEW_DOTE") {
     let data = action.data
-    return [...state,{...data,id:getId()}]
-  }
+    return [...state, { ...data }]
+  } else if (action.type === 'INIT_DOTES')
+    return action.data
 
   return state
 }
 
-export default reducer
+export default anecdoteReducer
